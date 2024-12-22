@@ -1,0 +1,137 @@
+{% include 'layout/base.html.twig' %}
+
+<div class="row justify-content-between">
+	<div class="col-lg-10">
+
+		<img class="img-fluid" src="{{ asset('uploads/posts/' ~ post.picture) }}" alt="">
+		<div class="d-flex align-items-center mt-4">
+			<h1 class="text-white add-letter-space">{{ post.title }}</h1>
+			{% if is_granted('ROLE_ADMIN') %}
+				<div class="ml-auto">
+					<a class="btn btn-primary btn-sm" href="{{ path('post_edit', {'id': post.id}) }}">Modifier</a>
+					<form method="post" action="{{ path('post_delete', {'id': post.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+						<button class="btn btn-danger btn-sm" type="submit">Supprimer</button>
+					</form>
+				</div>
+			{% endif %}
+		</div>
+
+		<ul class="post-meta mt-3 mb-4">
+			<li class="d-inline-block mr-3">
+				<span class="fas fa-clock text-primary"></span>
+				<a class="ml-1" href="#">{{ post.publishedAt|date('d/m/Y H:i') }}</a>
+			</li>
+			<li class="d-inline-block">
+				<a class="ml-1" href="{{ path('posts_by_category', {'id': post.category.id}) }}">
+					<span class="fas fa-list-alt text-primary"></span>
+					Catégorie :
+					{{ post.category.name }}
+				</a>
+			</li>
+			<li class="d-inline-block">
+				<a class="ml-1" href="{{ path('user_show', {'id': post.user.id}) }}">
+					{% if post.user.profilePicture %}
+						<img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/' ~ post.user.profilePicture) }}" alt="">
+					{% else %}
+						<img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/default.jpeg') }}" alt="">
+					{% endif %}
+					Auteur :
+					{{ post.user.firstName }}
+					{{ post.user.lastName }}
+					{% if post.user.isVerified %}
+						<span class="fas fa-check text-success"></span>
+					{% endif %}
+				</a>
+			</li>
+		</ul>
+
+		<p>{{ post.content }}</p>
+
+		<div class="widget m-0 mt-1">
+			<h1 class="widget-title text-white d-inline-block mb-4">Commentaires</h1>
+			<ul>
+				{% for comment in post.comments %}
+					{% if comment.status == 'visible' %}
+
+						<li style="list-style-type: none;">
+							{% if comment.user.profilePicture %}
+								<img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/' ~ comment.user.profilePicture) }}" alt="">
+							{% else %}
+								<img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/default.jpeg') }}" alt="">
+							{% endif %}
+							<strong>{{ comment.user.firstName }}
+								{{ comment.user.lastName }}
+								{% if comment.user.isVerified %}
+									<span class="fas fa-check text-success"></span>
+								{% endif %}
+							</strong>
+							({{ comment.createdAt|date('d/m/Y H:i') }}):
+							<p class="my-2">{{ comment.content }}</p>
+
+							{% if is_granted('ROLE_ADMIN') %}
+								<a href="{{ path('comment_edit', {'id': comment.id}) }}" class="btn btn-primary btn-sm">Modifier
+									<span class="fas fa-solid fa-pen"></span>
+								</a>
+								<form method="post" action="{{ path('comment_delete', {'id': comment.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+									<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+									<button class="btn btn-danger btn-sm">Supprimer
+										<span>
+											<i class="fas fa-solid fa-trash"></i>
+										</span>
+									</button>
+								</form>
+							{% endif %}
+						</li>
+						<br>
+					{% elseif comment.status == "en attente"%}
+						{% if is_granted('ROLE_ADMIN')  or (comment.user.id == app.user.id) %}
+							<li style="list-style-type: none;">
+								<strong>Commentaire en attente de validation</strong>
+                                <br>
+								{% if comment.user.profilePicture %}
+									<img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/' ~ comment.user.profilePicture) }}" alt="">
+								{% else %}
+									<img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/default.jpeg') }}" alt="">
+								{% endif %}
+								<strong>{{ comment.user.firstName }}
+									{{ comment.user.lastName }}
+									{% if comment.user.isVerified %}
+										<span class="fas fa-check text-success"></span>
+									{% endif %}
+								</strong>
+								({{ comment.createdAt|date('d/m/Y H:i') }}):
+								<p class="my-2">{{ comment.content }}</p>
+								{% if is_granted('ROLE_ADMIN') %}
+									<a href="{{ path('admin_approve_comment', {'id': comment.id}) }}" class="btn btn-success btn-sm">Approuver</a>
+									<a href="{{ path('admin_reject_comment', {'id': comment.id}) }}" class="btn btn-danger btn-sm">Rejeter</a>
+								{% endif %}
+
+							</li>
+							<br>
+						{% endif %}
+
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+
+		{% if is_granted('ROLE_USER') and app.user.isVerified %}
+			<div class="widget">
+				<h1 class="widget-title text-white d-inline-block mb-4">Ajouter un commentaire</h1>
+				{{ form_start(comment_form) }}
+				{{ form_widget(comment_form) }}
+				<button class="btn btn-primary">Envoyer</button>
+				{{ form_end(comment_form) }}
+			</div>
+		{% elseif not is_granted('ROLE_USER') %}
+			<p>Vous devez être connecté pour ajouter un commentaire.
+				<a href="{{ path('app_login') }}">Connexion</a>
+			</p>
+		{% elseif not app.user.isVerified %}
+			<p>Vous devez être vérifié par un administrateur pour ajouter un commentaire.</p>
+		{% endif %}
+	</div>
+</div>
+<br>
+{% include 'layout/footer.html.twig' %}

@@ -1,0 +1,85 @@
+<div class="container pt-4 mt-5">
+	<div class="row justify-content-between">
+		<div class="col-lg-7">
+			{% if posts is empty %}
+				<p class="text-white">Il n'y a pas encore d'articles disponibles.</p>
+			</div>
+		{% else %}
+			{% for post in posts %}
+				<div class="card post-item bg-transparent border-0 mb-5">
+					{% if is_granted('ROLE_USER')%}
+
+						<a href="{{ path('post_show', {'id': post.id}) }}">
+							<img class="card-img-top rounded-0" src="{{ asset('uploads/posts/' ~ post.picture) }}" alt="{{ post.title }}">
+						</a>
+					{% else %}
+						<img class="card-img-top rounded-0" src="{{ asset('uploads/posts/' ~ post.picture) }}" alt="{{ post.title }}">
+					{% endif %}
+					<div class="card-body px-0">
+						<h2 class="card-title">
+							<a class="text-white opacity-75-onHover" href="{{ path('post_show', {'id': post.id}) }}">{{ post.title }}</a>
+						</h2>
+						<ul class="post-meta mt-3 mb-4">
+							<li class="d-inline-block mr-3">
+								<span class="fas fa-clock text-primary"></span>
+								<a class="ml-1" href="#!">{{ post.publishedAt|date('d/m/Y H:i') }}</a>
+							</li>
+							<li class="d-inline-block">
+								{% if is_granted('ROLE_USER')%}
+									<a class="ml-1" href="{{ path('posts_by_category', {'id': post.category.id}) }}">
+                                    {% else %}
+                                        <a class="ml-1" href="#!">
+                                    {% endif %}
+										<span class="fas fa-list-alt text-primary"></span>
+										Catégorie :
+										{{ post.category.name }}</a>
+								</li>
+							</li>
+							<li class="d-inline-block">
+								{% if is_granted('ROLE_USER')%}
+									<a class="ml-1" href="{{ path('user_show', {'id': post.user.id}) }}">
+									{% else %}
+										<a class="ml-1" href="#!">
+										{% endif %}
+										{% if post.user.profilePicture %}
+											<img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/' ~ post.user.profilePicture) }}" alt="">
+										{% else %}
+											<img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/default.jpeg') }}" alt="">
+										{% endif %}
+										Auteur :
+										{{ post.user.firstName }}
+										{{ post.user.lastName }}
+										{% if post.user.isVerified %}
+											<span class="fas fa-check text-success"></span>
+										{% endif %}
+
+									</a>
+								</li>
+							</li>
+						</ul>
+						<p class="card-text my-4">{{ post.content|slice(0, 150) ~ '...' }}</p>
+						{% if is_granted('ROLE_USER')%}
+
+							<a href="{{ path('post_show', {'id': post.id}) }}" class="btn btn-primary">Voir plus >></a>
+						{% endif %}
+						{% if is_granted('ROLE_ADMIN') %}
+							<a href="{{ path('post_edit', {'id': post.id}) }}" class="btn btn-secondary">Modifier
+								<span class="fas fa-solid fa-pen"></span>
+							</a>
+							<form method="post" action="{{ path('post_delete', {'id': post.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+								<button class="btn btn-danger">Supprimer
+									<span>
+										<i class="fas fa-solid fa-trash"></i>
+									</span>
+								</button>
+
+
+							</form>
+						{% endif %}
+					</li>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endif %}

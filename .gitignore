@@ -1,0 +1,41 @@
+# Symfony specific
+/var/
+/vendor/
+/public/bundles/
+/public/assets/
+/assets/vendor/
+.env.local
+.env.*.local
+.env.local.php
+.env
+.env.test
+
+# PHPUnit
+/phpunit.xml
+.phpunit.result.cache
+
+# Cache and logs
+/var/cache/*
+/var/log/*
+/var/sessions/*
+
+# IDE specific
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Composer
+composer.phar
+
+# Node/npm (if you're using JavaScript build tools)
+/node_modules/
+npm-debug.log
+yarn-error.log
+
+# Generated assets
+/public/build/

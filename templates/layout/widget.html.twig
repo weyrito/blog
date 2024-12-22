@@ -1,0 +1,40 @@
+<div class="col-lg-4 col-md-5">
+	<div class="widget text-center">
+		<img class="author-thumb-sm rounded-circle d-block mx-auto" src="{{ asset('images/author-sm.png') }}" alt="">
+		<h2 class="widget-title text-white d-inline-block mt-4">A propos du site</h2>
+		<p class="mt-4">Blog sur la région normande dans lequel vous retrouverez de magnifiques articles</p>
+	</div>
+	<!-- end of author-widget -->
+
+	<div class="widget bg-dark p-4 text-center">
+		<h2 class="widget-title text-white d-inline-block mt-4">Recevez notre newsletter</h2>
+		<p class="mt-4">Toute l'actualité sur la Normandie.</p>
+		<form action="#">
+			<div class="form-group">
+				<input type="email" class="form-control bg-transparent rounded-0 my-4" placeholder="Votre addresse mail">
+				<button class="btn btn-primary">Abonnez-vous</button>
+			</div>
+		</form>
+	</div>
+	<!-- end of subscription-widget -->
+
+	<div class="widget">
+		<div class="mb-5 text-center">
+			<h2 class="widget-title text-white d-inline-block">Articles pour vous</h2>
+		</div>
+		{% for post in posts    | slice(0, 3) %}
+			<div class="card post-item bg-transparent border-0 mb-5">
+				<a href="{{ path('post_show', {'id': post.id}) }}">
+					<img class="card-img-top rounded-0" src="{{ asset('uploads/posts/' ~ post.picture) }}" alt="{{ post.title }}">
+				</a>
+				<div class="card-body px-0">
+					<h2 class="card-title">
+						<a class="text-white opacity-75-onHover" href="{{ path('post_show', {'id': post.id}) }}">{{ post.title }}</a>
+					</h2>
+					<a href="{{ path('post_show', {'id': post.id}) }}" class="btn btn-primary">Voir plus >></a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+	<!-- end of post-items widget -->
+</div>

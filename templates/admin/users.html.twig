@@ -1,0 +1,55 @@
+{# templates/admin/users.html.twig #}
+{% include 'layout/base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-white">Liste d'utilisateurs</h1>
+    <table class="table text-white">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Photo de profil</th>
+                <th>Vérifié</th>
+                <th>Rôle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td>
+                    {% if user.profilePicture %}
+                            <img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="">
+                        {% else %}
+                            <img class="img-fluid profile-picture-small" src="{{ asset('uploads/profile_pictures/default.jpeg') }}" alt="">
+                        {% endif %}
+                        </td>   
+                    <td>
+                        <form method="post" action="{{ path(user.isVerified ? 'admin_invalidate_user' : 'admin_verify_user', {id: user.id}) }}">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheck{{ user.id }}" {{ user.isVerified ? 'checked' : '' }} onchange="this.form.submit()">
+                                <label class="form-check-label" for="flexSwitchCheck{{ user.id }}"></label>
+                            </div>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="{{ path('admin_update_user_role', {id: user.id}) }}">
+                            <select name="role" class="form-select" onchange="this.form.submit()">
+                                <option value="ROLE_USER" {{ 'ROLE_USER' in user.roles ? 'selected' : '' }}>User</option>
+                                <option value="ROLE_ADMIN" {{ 'ROLE_ADMIN' in user.roles ? 'selected' : '' }}>Admin</option>
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="{{ path('admin_delete_user', {id: user.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                            <button class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% include 'layout/footer.html.twig' %}

@@ -1,0 +1,102 @@
+{% include 'layout/base.html.twig' %}
+
+{% block body %}
+	<div class="text-white">
+		<h1>Tableau de bord</h1>
+
+		<h2>Articles</h2>
+		<table class="table text-white">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Titre</th>
+					<th>Auteur</th>
+					<th>Date de création</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for post in posts %}
+					<tr>
+						<td>{{ post.id }}</td>
+						<td>{{ post.title }}</td>
+						<td>{{ post.user.email }}</td>
+						<td>{{ post.publishedAt|date('d/m/Y H:i') }}</td>
+						<td>
+							<a href="{{ path('post_edit', {'id': post.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+							<form method="post" action="{{ path('post_delete', {'id': post.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+								<button class="btn btn-danger btn-sm">Supprimer</button>
+							</form>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<a href="{{ path('post_new') }}" class="btn btn-primary mb-3">Ajouter un article</a>
+
+
+		<h2>Catégories</h2>
+		<table class="table text-white">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Nom</th>
+					<th>Description</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for category in categories %}
+					<tr>
+						<td>{{ category.id }}</td>
+						<td>{{ category.name }}</td>
+						<td>{{ category.description }}</td>
+						<td>
+							<a href="{{ path('category_edit', {'id': category.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+							<form method="post" action="{{ path('category_delete', {'id': category.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie et tous ses articles associés ?');">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+								<button class="btn btn-primary btn-sm">Supprimer</button>
+							</form>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<a href="{{ path('category_new') }}" class="btn btn-primary mb-3">Ajouter une catégorie</a>
+
+		<h2>Commentaires</h2>
+		<table class="table text-white">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Contenu</th>
+					<th>Auteur</th>
+					<th>Date de création</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for comment in comments %}
+					<td>{{ comment.id }}</td>
+					<td>{{ comment.content }}</td>
+					<td>{{ comment.user.email }}</td>
+					<td>{{ comment.createdAt|date('d/m/Y H:i') }}</td>
+					<td>
+						{% if comment.status == 'en attente' %}
+							<a href="{{ path('admin_approve_comment', {'id': comment.id}) }}" class="btn btn-success btn-sm">Approuver</a>
+							<a href="{{ path('admin_reject_comment', {'id': comment.id}) }}" class="btn btn-danger btn-sm">Rejeter</a>
+
+						{% endif %}
+
+						<a href="{{ path('comment_edit', {'id': comment.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+						<form method="post" action="{{ path('comment_delete', {'id': comment.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+							<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+							<button class="btn btn-primary btn-sm">Supprimer</button>
+						</form>
+					</td>
+				</td>
+			</tbody>
+		</tr>
+	{% endfor %}
+</tbody></table></div>{% endblock %}{% include 'layout/footer.html.twig' %}</div></section></body></html>

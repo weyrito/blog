@@ -1,0 +1,40 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block body %}
+	<h1>Liste des commentaires</h1>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Contenu</th>
+				<th>Auteur</th>
+				<th>Date de création</th>
+				{% if is_granted('ROLE_ADMIN') %}
+					<th>Actions</th>
+				{% endif %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for comment in comments %}
+				<tr>
+					<td>{{ comment.id }}</td>
+					<td>{{ comment.content }}</td>
+					<td>{{ comment.user.email }}</td>
+					<td>{{ comment.createdAt|date('d/m/Y H:i') }}</td>
+					{% if is_granted('ROLE_ADMIN') %}
+						<td>
+							<a href="{{ path('comment_edit', {'id': comment.id}) }}" class="btn btn-primary">Modifier</a>
+							<form method="post" action="{{ path('comment_delete', {'id': comment.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+								<button class="btn btn-danger">Supprimer</button>
+							</form>
+						</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('comment_new') }}" class="btn btn-success">Créer un nouveau commentaire</a>
+{% endblock %}

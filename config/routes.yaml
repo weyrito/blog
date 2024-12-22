@@ -1,0 +1,116 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+redirect_to_home:
+    path: /
+    controller: App\Controller\HomeController::redirectToHome
+
+# Routes publiques
+app_home:
+    path: /home
+    controller: App\Controller\HomeController::index
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+app_logout: 
+    path: /logout
+    controller: App\Controller\SecurityController::logout
+app_register:
+    path: /register
+    controller: App\Controller\RegistrationController::register
+app_about:
+    path: /à-propos
+    controller: App\Controller\HomeController::about
+app_history:
+    path: /histoire
+    controller: App\Controller\HomeController::history
+app_legal:
+    path: /mentions_legales
+    controller: App\Controller\HomeController::legal
+app_confidentiality:
+    path: /confidentialite
+    controller: App\Controller\HomeController::confidentiality
+
+
+# Routes administrateur
+admin:
+    path: /admin
+    controller: App\Controller\AdminController::index
+admin_users:
+    path: /admin/users
+    controller: App\Controller\AdminController::listUsers
+admin_categories:
+    path: /admin/categories
+    controller: App\Controller\AdminController::listCategories
+admin_verify_user:
+    path: /admin/verify/{id}
+    controller: App\Controller\AdminController::verifyUser
+admin_invalidate_user:
+    path: /admin/users/invalidate/{id}
+    controller: App\Controller\AdminController::invalidateUser
+admin_update_user_role:
+    path: /admin/users/update-role/{id}
+    controller: App\Controller\AdminController::updateUserRole
+admin_delete_user:
+    path: /admin/users/delete/{id}
+    controller: App\Controller\AdminController::deleteUser
+
+# Routes articles
+
+post_new:
+    path: /posts/new
+    controller: App\Controller\PostController::new
+post_edit:
+    path: /posts/edit/{id}
+    controller: App\Controller\PostController::edit
+post_delete:
+    path: /posts/delete/{id}
+    controller: App\Controller\PostController::delete
+post_show:
+    path: /posts/show/{id}
+    controller: App\Controller\PostController::show
+posts_by_category:
+    path: /category/{id}/posts
+    controller: App\Controller\CategoryController::postsByCategory
+posts_by_user:
+    path: /user/{id}/posts
+    controller: App\Controller\UserController::postsByUser
+
+# Routes catégories
+category_index:
+    path: /categories
+    controller: App\Controller\CategoryController::index
+category_new:
+    path: /categories/new
+    controller: App\Controller\CategoryController::new
+category_edit:
+    path: /categories/edit/{id}
+    controller: App\Controller\CategoryController::edit
+category_delete:
+    path: /categories/delete/{id}
+    controller: App\Controller\CategoryController::delete
+
+# Routes commentaires
+comment_index:
+    path: /comments
+    controller: App\Controller\CommentController::index
+comment_new:
+    path: /comments/new
+    controller: App\Controller\CommentController::new
+comment_edit:
+    path: /comments/edit/{id}
+    controller: App\Controller\CommentController::edit
+comment_delete:
+    path: /comments/delete/{id}
+    controller: App\Controller\CommentController::delete
+
+# Routes utilisateurs
+user_show:
+    path: /users/show/{id}
+    controller: App\Controller\UserController::show
+user_edit:
+    path: /users/edit/{id}
+    controller: App\Controller\UserController::edit

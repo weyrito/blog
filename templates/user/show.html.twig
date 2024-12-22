@@ -1,0 +1,70 @@
+{% include 'layout/base.html.twig' %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Profil de {{ user.firstName }} {{ user.lastName }}</h1>
+    
+    <div class="row mb-5">
+        <div class="col-lg-4 text-center">
+            {% if user.profilePicture %}
+                <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil" class="img-fluid rounded-circle mb-3">
+            {% else %}
+                <img src="{{ asset('uploads/profile_pictures/default.jpeg') }}" alt="Photo de profil" class="img-fluid rounded-circle mb-3">
+            {% endif %}
+            <h3>{{ user.firstName }} {{ user.lastName }}</h3>
+            <p>{{ user.email }}</p>
+        </div>
+        <div class="col-lg-8">
+            <h2>Articles de {{ user.firstName }}</h2>
+            {% if user.Post|length > 0 %}
+                <ul class="list-unstyled">
+                    {% for post in user.Post|slice(0, 3) %}
+                        <li class="mb-4">
+                            <div class="card bg-dark text-white">
+                                {% if post.picture %}
+                                    <img src="{{ asset('uploads/posts/' ~ post.picture) }}" alt="Image de l'article" class="card-img-top img-thumbnail" style="width: 150px; height: auto;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ path('post_show', {'id': post.id}) }}" class="text-white">{{ post.title }}</a>
+                                    </h5>
+                                    <p class="card-text">{{ post.publishedAt|date('d/m/Y H:i') }}</p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="text-right">
+                    <a href="{{ path('posts_by_user', {'id': user.id}) }}" class="btn btn-primary">Voir plus >></a>
+                </div>
+            {% else %}
+                <p>Aucun article publié.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>Commentaires de {{ user.firstName }}</h2>
+            {% if user.Comment|length > 0 %}
+                <ul class="list-unstyled">
+                    {% for comment in user.Comment %}
+                        <li class="mb-4">
+                            <div class="card bg-dark text-white">
+                                <div class="card-body">
+                                    <p class="card-text">{{ comment.content }}</p>
+                                    <p>Sur l'article : <a href="{{ path('post_show', {'id': comment.post.id}) }}" class="text-white">{{ comment.post.title }}</a></p>
+                                    <p>{{ comment.createdAt|date('d/m/Y H:i') }}</p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucun commentaire publié.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% include 'layout/footer.html.twig' %}

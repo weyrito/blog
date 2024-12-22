@@ -1,0 +1,74 @@
+<aside>
+    <div class="sidenav position-sticky d-flex flex-column justify-content-between">
+        <a class="navbar-brand" href="{{ path('app_home') }}" class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="">
+        </a>
+        <!-- end of navbar-brand -->
+
+        <div class="navbar navbar-dark my-4 p-0 font-primary">
+            <ul class="navbar-nav w-100">
+                <li class="nav-item {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}">
+                    <a class="nav-link text-white px-0 pt-0" href="{{ path('app_home') }}">Accueil</a>
+                </li>
+                {% if is_granted('ROLE_USER') %}
+                    <li class="nav-item {% if app.request.attributes.get('_route') == 'user_edit' %}active{% endif %}">
+                        <a class="nav-link text-white px-0" href="{{ path('user_edit', {'id': app.user.id}) }}">Profil</a>
+                    </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item {% if app.request.attributes.get('_route') == 'post_new' %}active{% endif %}">
+                            <a class="nav-link text-white px-0" href="{{ path('post_new') }}">Nouvel article</a>
+                        </li>
+                        <li class="nav-item accordion">
+                            <div id="drop-menu" class="drop-menu collapse {% if app.request.attributes.get('_route') starts with 'admin' %}show{% endif %}">
+                                <a class="d-block {% if app.request.attributes.get('_route') == 'admin' %}active{% endif %}" href="{{ path('admin') }}">Tableau de bord</a>
+                                {# <a class="d-block {% if app.request.attributes.get('_route') == 'admin_categories' %}active{% endif %}" href="{{ path('admin_categories') }}">Gestion des catégories</a> #}
+                                <a class="d-block {% if app.request.attributes.get('_route') == 'admin_users' %}active{% endif %}" href="{{ path('admin_users') }}">Gestion des utilisateurs</a>
+                                {# <a class="d-block {% if app.request.attributes.get('_route') == 'admin' %}active{% endif %}" href="{{ path('admin') }}">Gestion des articles</a> #}
+                            </div>
+                            <a class="nav-link text-white {% if app.request.attributes.get('_route') starts with 'admin' %}active{% endif %}" href="#!" role="button" data-toggle="collapse" data-target="#drop-menu" aria-expanded="false" aria-controls="drop-menu">Administration</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white px-0" href="{{ path('app_logout') }}">Déconnexion</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item {% if app.request.attributes.get('_route') == 'app_login' %}active{% endif %}">
+                        <a class="nav-link text-white px-0" href="{{ path('app_login') }}">Connexion</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item mt-3">
+                    <select class="custom-select bg-transparent rounded-0 text-white shadow-none px-1" id="pick-lang">
+                        <option selected value="fr">Français</option>
+                        {# <option value="en">English</option> #}
+                    </select>
+                </li>
+            </ul>
+        </div>
+        <!-- end of navbar -->
+
+        <ul class="list-inline nml-2">
+            <li class="list-inline-item">
+                <a href="#!" class="text-white text-red-onHover pr-2">
+                    <span class="fab fa-twitter"></span>
+                </a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#!" class="text-white text-red-onHover p-2">
+                    <span class="fab fa-facebook-f"></span>
+                </a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#!" class="text-white text-red-onHover p-2">
+                    <span class="fab fa-instagram"></span>
+                </a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#!" class="text-white text-red-onHover p-2">
+                    <span class="fab fa-linkedin-in"></span>
+                </a>
+            </li>
+        </ul>
+        <!-- end of social-links -->
+    </div>
+</aside>
+<!-- end of sidenav -->
