@@ -28,13 +28,6 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/', name: 'redirect_to_home')]
-    public function redirectToHome(): Response
-    {
-        // Redirection vers la page d'accueil
-        return $this->redirectToRoute('app_home');
-    }
-
     #[Route('about', name: 'app_about')]
     public function about(): Response
     {

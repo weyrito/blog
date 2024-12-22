@@ -4,14 +4,10 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-redirect_to_home:
-    path: /
-    controller: App\Controller\HomeController::redirectToHome
-
-# Routes publiques
 app_home:
-    path: /home
+    path: /
     controller: App\Controller\HomeController::index
+
 app_login:
     path: /login
     controller: App\Controller\SecurityController::login
